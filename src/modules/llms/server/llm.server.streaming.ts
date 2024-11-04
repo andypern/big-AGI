@@ -520,7 +520,7 @@ function _prepareRequestData({ access, model, history, context: _context }: Chat
     case 'ollama':
       return {
         ...ollamaAccess(access, OLLAMA_PATH_CHAT),
-        body: ollamaChatCompletionPayload(model, history, access.ollamaJson, true),
+        body: ollamaChatCompletionPayload(model, history, access.ollamaJson, access.stream, access.fallback),
         vendorMuxingFormat: 'json-nl',
         vendorStreamParser: createStreamParserOllama(),
       };

@@ -65,6 +65,7 @@ const wireOllamaChatCompletionInputSchema = z.object({
     top_p: z.number().positive().optional(),
   }).optional(),
   stream: z.boolean().optional(), // default: true
+  fallback: z.boolean().optional(), // default: false 
   keep_alive: z.string().optional(), // e.g. '5m'
 
   // Note: not used anymore as of 2024-05-07?

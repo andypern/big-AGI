@@ -27,7 +27,7 @@ export function OllamaSourceSetup(props: { sourceId: DModelSourceId }) {
     useSourceSetup(props.sourceId, ModelVendorOllama);
 
   // derived state
-  const { ollamaHost, ollamaJson } = access;
+  const { ollamaHost, ollamaJson, stream, fallback } = access;
 
   const hostValid = !!asValidURL(ollamaHost);
   const hostError = !!ollamaHost && !hostValid;
@@ -50,7 +50,9 @@ export function OllamaSourceSetup(props: { sourceId: DModelSourceId }) {
     />
 
     <FormSwitchControl
-      title='JSON Output' on='Enabled' fullWidth
+      title='JSON Output'
+      on='Enabled'
+      fullWidth
       description={<Link level='body-sm' href='https://github.com/ollama/ollama/blob/main/docs/api.md#generate-a-chat-completion' target='_blank'>Information</Link>}
       checked={ollamaJson}
       onChange={on => {
@@ -58,6 +60,38 @@ export function OllamaSourceSetup(props: { sourceId: DModelSourceId }) {
         refetch();
       }}
     />
+
+    {/* New "Streaming" Selector */}
+    <FormSwitchControl
+      title='Streaming'
+      on='Enabled'
+      off='Disabled'
+      fullWidth
+      description={<Link level='body-sm' href='https://github.com/ollama/ollama/blob/main/docs/streaming.md' target='_blank'>Information</Link>}
+      checked={stream || false}
+      onChange={on => {
+        updateSetup({ 
+          stream: on 
+        });
+        refetch();
+      }}
+    />
+{/* New "Model Fallback" Selector */}
+    <FormSwitchControl
+      title='RAG Fallback'
+      on='Enabled'
+      off='Disabled'
+      fullWidth
+      description={<Link level='body-sm' href='https://www.google.com' target='_blank'>Information</Link>}
+      checked={fallback || false}
+      onChange={on => {
+        updateSetup({
+          fallback: on
+        });
+        refetch();
+      }}
+    />
+
 
     <SetupFormRefetchButton
       refetch={refetch} disabled={!shallFetchSucceed || isFetching} loading={isFetching} error={isError}

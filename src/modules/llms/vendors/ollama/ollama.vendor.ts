@@ -15,6 +15,8 @@ import { OllamaSourceSetup } from './OllamaSourceSetup';
 export interface SourceSetupOllama {
   ollamaHost: string;
   ollamaJson: boolean;
+  stream: boolean;
+  fallback: boolean;
 }
 
 
@@ -36,6 +38,8 @@ export const ModelVendorOllama: IModelVendor<SourceSetupOllama, OllamaAccessSche
     dialect: 'ollama',
     ollamaHost: partialSetup?.ollamaHost || '',
     ollamaJson: partialSetup?.ollamaJson || false,
+    stream: partialSetup?.stream || false,
+    fallback: partialSetup?.fallback|| false,
   }),
 
   // List Models

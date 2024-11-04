@@ -40,7 +40,7 @@ export function ollamaAccess(access: OllamaAccessSchema, apiPath: string): { hea
 }
 
 
-export const ollamaChatCompletionPayload = (model: OpenAIModelSchema, history: OpenAIHistorySchema, jsonOutput: boolean, stream: boolean): WireOllamaChatCompletionInput => ({
+export const ollamaChatCompletionPayload = (model: OpenAIModelSchema, history: OpenAIHistorySchema, jsonOutput: boolean, stream: boolean, fallback: boolean): WireOllamaChatCompletionInput => ({
   model: model.id,
   messages: history,
   options: {
@@ -50,7 +50,9 @@ export const ollamaChatCompletionPayload = (model: OpenAIModelSchema, history: O
   // n: ...
   // functions: ...
   // function_call: ...
-  stream,
+  //stream,
+  'stream': stream,
+  'fallback': fallback,
 });
 
 
@@ -103,6 +105,8 @@ export const ollamaAccessSchema = z.object({
   dialect: z.enum(['ollama']),
   ollamaHost: z.string().trim(),
   ollamaJson: z.boolean(),
+  stream: z.boolean(),
+  fallback: z.boolean(),
 });
 export type OllamaAccessSchema = z.infer<typeof ollamaAccessSchema>;
 
@@ -255,7 +259,7 @@ export const llmOllamaRouter = createTRPCRouter({
     .output(llmsChatGenerateOutputSchema)
     .mutation(async ({ input: { access, history, model } }) => {
 
-      const wireGeneration = await ollamaPOST(access, ollamaChatCompletionPayload(model, history, access.ollamaJson, false), OLLAMA_PATH_CHAT);
+      const wireGeneration = await ollamaPOST(access, ollamaChatCompletionPayload(model, history, access.ollamaJson, false, false), OLLAMA_PATH_CHAT);
       const generation = wireOllamaChunkedOutputSchema.parse(wireGeneration);
 
       if ('error' in generation)
